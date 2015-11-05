@@ -45,7 +45,8 @@ class MyForm(wx.Frame):
  
     #----------------------------------------------------------------------
     def __init__(self, name):
-        wx.Frame.__init__(self, None, wx.ID_ANY, name)
+        wx.Frame.__init__(self, None, wx.ID_ANY, name, size=(300,300))
+        self.SetSize((400, 300))
         panel = wx.Panel(self, -1)
         label1 = wx.StaticText(panel, -1, u"输入文件: ")
         label2 = wx.StaticText(panel, -1, u"输出文件: ")
@@ -129,6 +130,7 @@ class MyForm(wx.Frame):
         
     def onSetting(self):
         pass
+        
  
     #----------------------------------------------------------------------
     def updateDisplay(self, msg):
