@@ -45,8 +45,12 @@ class MyForm(wx.Frame):
  
     #----------------------------------------------------------------------
     def __init__(self, name):
+<<<<<<< HEAD
         wx.Frame.__init__(self, None, wx.ID_ANY, name, size=(300,300))
         self.SetSize((400, 300))
+=======
+        wx.Frame.__init__(self, parent = None, id = wx.ID_ANY, title = name,size = (100, 300), style =0)# wx.MINIMIZE_BOX|wx.RESIZE_BORDER|wx.SYSTEM_MENU|wx.CAPTION|wx.CLOSE_BOX)
+>>>>>>> origin/master
         panel = wx.Panel(self, -1)
         label1 = wx.StaticText(panel, -1, u"输入文件: ")
         label2 = wx.StaticText(panel, -1, u"输出文件: ")
@@ -146,6 +150,7 @@ class MyForm(wx.Frame):
 #----------------------------------------------------------------------
 # Run the program
 if __name__ == "__main__":
-    app = wx.PySimpleApp()
+    app = wx.App()
+    fsize = wx.Size(100, 230)
     frame = MyForm(u"竞品关键字查询 %s"%(__myversion)).Show()
     app.MainLoop()
