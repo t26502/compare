@@ -5,6 +5,7 @@ import socket
 import os
 import time
 import platform
+import threading
 import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -14,16 +15,18 @@ __author = u'jasonzhang'
 __version = u'bate 2.0'
 ###########################################
 indexcount = 0
-
-
+indextotal = 0
+rdlock = threading.Lock()
+wrlock = threading.Lock()
 ###########################################
 
 class MyFrame(wx.Frame):
     def __init__(self, parent, title):
         self.width = 330
+        self.height = 170
         if platform.system() == "Darwin":
             self.height = 160
-        elif platform.system == "Windows":
+        elif platform.system() == "Windows":
             self.height = 170
         super(MyFrame, self).__init__(parent, title = title, size = (self.width, self.height), style = wx.MINIMIZE_BOX|wx.CLOSE_BOX|wx.SYSTEM_MENU|wx.CAPTION)
         self.InitUi()
@@ -33,6 +36,8 @@ class MyFrame(wx.Frame):
         self._setflag = True
         
     def InitUi(self):
+        global indexcount
+        global indextotal
         panel = wx.Panel(self)
         sizer = wx.GridBagSizer(5, 7)
         
@@ -72,11 +77,13 @@ class MyFrame(wx.Frame):
         sizer.Add(self.btnsetting, pos = (3, 4), flag = wx.TOP|wx.RIGHT, border = 8)
         self.btnsetting.Bind(wx.EVT_BUTTON, self.onSetting)
         
-        self.gauge = wx.Gauge(panel, -1, 100, (0, 0), (230, 15), style = wx.GA_PROGRESSBAR)
+        self.gauge = wx.Gauge(panel, id = -1, range = 1000, pos = (0, 0), size = (200, 15), style = wx.GA_PROGRESSBAR)
         self.gauge.SetBezelFace(1)
         self.gauge.SetShadowWidth(1)
-        sizer.Add(self.gauge, pos = (4, 0), span = (1, 4), flag = wx.TOP|wx.LEFT, border = 15)
-        self.gauge.SetValue(90)
+        sizer.Add(self.gauge, pos = (4, 0), span = (1, 3), flag = wx.TOP|wx.LEFT, border = 15)
+        
+        self.processlabel = wx.StaticText(panel, label = u"%d/%d"%(indexcount, indextotal))
+        sizer.Add(self.processlabel, pos = (4, 3), span = (1, 2), flag = wx.TOP, border = 15)
         
         self.messageinfo = wx.TextCtrl(panel, size = wx.Size(self.width - 30, 180), style = wx.TE_MULTILINE|wx.VSCROLL)
         self.messageinfo.SetBackgroundColour("gray")
@@ -158,6 +165,7 @@ class MyFrame(wx.Frame):
         
     
     def onBegin(self, event):
+        self.messageinfo.Clear()
         self.lockbtn()
         self.Size = wx.Size(-1, 400)
         
