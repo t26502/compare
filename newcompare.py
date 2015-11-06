@@ -12,11 +12,15 @@ sys.setdefaultencoding('utf8')
 __author = u'jasonzhang'
 __version = u'bate 2.0'
 ###########################################
+indexcount = 0
+
+
+###########################################
 
 class MyFrame(wx.Frame):
     def __init__(self, parent, title):
         self.width = 325
-        self.height = 150
+        self.height = 160
         super(MyFrame, self).__init__(parent, title = title, size = (self.width, self.height), style = wx.MINIMIZE_BOX|wx.CLOSE_BOX|wx.SYSTEM_MENU|wx.CAPTION)
         self.InitUi()
         self.Centre()
@@ -58,19 +62,39 @@ class MyFrame(wx.Frame):
         
         self.btnhelp = wx.Button(panel, label = u'?', size = wx.Size(30, -1))
         sizer.Add(self.btnhelp, pos = (3, 0), flag = wx.TOP|wx.LEFT, border = 8)
+        self.btnhelp.Bind(wx.EVT_BUTTON, self.onHelp)
         
         self.btnsetting = wx.Button(panel, label = u"设置", size = wx.Size(60, -1))
         sizer.Add(self.btnsetting, pos = (3, 4), flag = wx.TOP|wx.RIGHT, border = 8)
         self.btnsetting.Bind(wx.EVT_BUTTON, self.onSetting)
+        
+        self.gauge = wx.Gauge(panel, -1, 100, (100, 50), (250, 25), style = wx.GA_PROGRESSBAR)
+        self.gauge.SetBezelFace(3)
+        self.gauge.SetShadowWidth(3)
+        sizer.Add(self.gauge, pos = (4, 1), span = (1, 4), flag = wx.TOP|wx.RIGHT, border = 8)
+        
+        self.messageinfo = wx.TextCtrl(panel, size = wx.Size(self.width - 30, 220), style = wx.TE_MULTILINE|wx.VSCROLL)
+        self.messageinfo.SetBackgroundColour("gray")
+        self.messageinfo.Disable()
+        sizer.Add(self.messageinfo, pos = (5, 0), span = (2, 5), flag = wx.TOP|wx.LEFT, border = 16)
         
         sb = wx.StaticBox(panel, label = "Setting")
         boxsizer = wx.StaticBoxSizer(sb, wx.VERTICAL)
         self.mutiplebox = wx.CheckBox(panel, label = u'多线程')
         self.mutiplebox.SetValue(True)
         boxsizer.Add(self.mutiplebox, flag=wx.LEFT|wx.TOP, border=5)
-        sizer.Add(boxsizer, pos = (1, 5), span = (2,2), flag = wx.EXPAND|wx.TOP|wx.LEFT|wx.RIGHT , border=10)
+        sizer.Add(boxsizer, pos = (1, 5), span = (2,2), flag = wx.EXPAND|wx.TOP|wx.LEFT|wx.RIGHT , border = 5)
         
         panel.SetSizer(sizer)
+    
+    def onHelp(self, event):
+        dlg = wx.MessageDialog(None, 
+                u"1、输入文件要求编码格式为UTF－8；\n2、如果每行不止一列，请用竖线‘｜’分隔；\n3、多线程处理速度较快，但可能较占资源；\n4、任何问题和建议，请rtx 张杰。",
+                u'提示',
+                wx.YES_DEFAULT|wx.ICON_INFORMATION)
+        result = dlg.ShowModal()
+        dlg.Destroy()
+        pass
         
     def onInut(self, event):
         file_wildcard = "All files(*.*)|*.*|Txt files(*.txt)|*.txt"
@@ -115,6 +139,7 @@ class MyFrame(wx.Frame):
             self.btnoutput.Enable()
             self.btnsetting.Enable()
             self._enableflag = True
+            
     def onSetting(self, event):
         if self._setflag == True:
             self.Size = wx.Size(450, -1)
