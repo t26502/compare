@@ -4,6 +4,7 @@ import wx
 import socket
 import os
 import time
+import platform
 import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -20,7 +21,10 @@ indexcount = 0
 class MyFrame(wx.Frame):
     def __init__(self, parent, title):
         self.width = 330
-        self.height = 175
+        if platform.system() == "Darwin":
+            self.height = 160
+        elif platform.system == "Windows":
+            self.height = 170
         super(MyFrame, self).__init__(parent, title = title, size = (self.width, self.height), style = wx.MINIMIZE_BOX|wx.CLOSE_BOX|wx.SYSTEM_MENU|wx.CAPTION)
         self.InitUi()
         self.Centre()
